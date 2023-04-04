@@ -1,6 +1,6 @@
-import pandas
+from test_data import config
 
-def get_value_from_json(file_path, key):
-    dic = pandas.read_json(path_or_buf=file_path, dtype="dictionary")
-    return dic[key]
+def get_value_from_json():
+    dic = config.dic
+    return dic
 

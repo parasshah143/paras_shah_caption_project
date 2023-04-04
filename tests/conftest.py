@@ -1,21 +1,14 @@
-import datetime
-
+from appium import webdriver
 import pytest
-from appium.webdriver.appium_service import AppiumService
-
-
 from utilities import read_utils
 
 
-@pytest.fixture(scope="session", autouse=True)
-def start_appium_server():
-    device=read_utils.get_value_from_json("../test_data/config.json","device")
-    port=read_utils.get_value_from_json("../test_data/config.json","port")
-    print(port,device)
-    service = AppiumService()
-    date = datetime.date.today()
-    service.start(args=['-p', port, '-a', 'localhost', '--relaxed-security', '--base-path', '/wd/hub'])
-    print(service.is_running)
-    print(service.is_listening)
+@pytest.fixture(scope="class", autouse=True)
+def start_appium_server(request):
+    dic = read_utils.get_value_from_json()
+    driver = webdriver.Remote("http://127.0.0.1:4723/wd/hub", dic)
+    driver.implicitly_wait(10)
+
+    request.cls.driver = driver
     yield
-    service.stop()
+    driver.quit()
